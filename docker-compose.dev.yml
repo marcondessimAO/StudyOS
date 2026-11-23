@@ -1,0 +1,12 @@
+# Só o banco, para desenvolvimento local. O app roda com `npm run dev`.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: studyos
+      POSTGRES_PASSWORD: studyos
+      POSTGRES_DB: studyos
+    ports: ["5432:5432"]
+    volumes: [pgdata_dev:/var/lib/postgresql/data]
+volumes:
+  pgdata_dev:

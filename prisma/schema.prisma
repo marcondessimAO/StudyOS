@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Perfil único (uso pessoal). Se virar multiusuário, vira User + userId nas tabelas.
+model Profile {
+  id             Int       @id @default(1)
+  xp             Int       @default(0)
+  streak         Int       @default(0)
+  bestStreak     Int       @default(0)
+  lastStudyDay   String? // "YYYY-MM-DD" no fuso APP_TZ
+  createdAt      DateTime  @default(now())
+}
+
+model Subject {
+  id         Int            @id @default(autoincrement())
+  name       String         @unique
+  color      String         @default("#8b5cf6")
+  weeklyGoal Int            @default(0) // minutos por semana
+  createdAt  DateTime       @default(now())
+  sessions   StudySession[]
+}
+
+model StudySession {
+  id         Int      @id @default(autoincrement())
+  subjectId  Int
+  subject    Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic      String   @default("")
+  kind       String   @default("estudo") // leitura | pratica | revisao | projeto | estudo
+  startedAt  DateTime
+  endedAt    DateTime
+  minutes    Int
+  rating     Int // 1..5 aproveitamento
+  summary    String   @default("")
+  xp         Int      @default(0)
+
+  @@index([startedAt])
+  @@index([subjectId])
+}
+
+model Achievement {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  unlockedAt DateTime @default(now())
+}

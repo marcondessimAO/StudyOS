@@ -57,7 +57,7 @@ Matéria/área de estudo. `weeklyGoal` em minutos (0 = sem meta). Excluir uma ma
 ### StudySession
 - `minutes` é calculado no servidor: `round(((endedAt - startedAt) - pausedSeconds*1000) / 60000)`. As pausas chegam na requisição (`pausedSeconds`) e não são persistidas.
 - `kind`: `estudo | leitura | pratica | revisao | projeto`.
-- `rating`: inteiro de 1 a 5 (validado na API; considerar `CHECK` no banco).
+- `rating`: inteiro de 1 a 5 (validado na API e por `CHECK` no banco, migração `0001_init`).
 - `xp`: XP efetivamente concedido, incluindo bônus (guardado para o recálculo ser exato, já que há um bônus aleatório).
 - Índices: `startedAt` (dashboard e heatmap) e `subjectId` (filtros).
 
@@ -82,5 +82,5 @@ Se virar multiusuário: criar `User`, adicionar `userId` em todas as tabelas e t
 ## Regras de integridade
 
 - Datas são armazenadas em UTC (o Prisma grava `timestamp(3)` interpretado como UTC); o "dia" de estudo é sempre derivado no fuso `APP_TZ`.
-- `endedAt > startedAt` e `minutes >= 1` (sessões menores que 1 min são descartadas na API).
+- `endedAt > startedAt` e `minutes >= 1` (sessões menores que 1 min são descartadas na API). Ambas também são `CHECK` no banco (migração `0001_init`).
 - Migrações são versionadas em `prisma/migrations` e aplicadas no start do contêiner (`prisma migrate deploy`).

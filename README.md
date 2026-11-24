@@ -50,7 +50,8 @@ git clone <url-do-repo> studyos && cd studyos
 cp .env.example .env
 docker compose -f docker-compose.dev.yml up -d   # sobe só o Postgres
 npm install
-npx prisma migrate dev
+npx prisma migrate dev                            # aplica as migrações
+npm run db:seed                                   # dados de exemplo (só dev; apaga sessões)
 npm run dev                                       # http://localhost:3000
 ```
 

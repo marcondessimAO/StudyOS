@@ -21,7 +21,7 @@ Plano detalhado, tarefa por tarefa: [12-plano-de-execucao](12-plano-de-execucao.
 
 ### Progresso do plano de execução
 - [x] T01 · Base do projeto e ferramentas
-- [ ] T02 · Design tokens, fontes e estilos globais
+- [x] T02 · Design tokens, fontes e estilos globais
 - [ ] T03 · Banco: schema, migração e seed
 - [ ] T04 · Datas no fuso do app
 - [ ] T05 · Gamificação: XP, nível, streak, conquistas

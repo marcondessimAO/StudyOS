@@ -82,9 +82,9 @@ o XP só entra quando o usuário clica em **COLETAR** (o clique é parte da reco
 |---|---|---|---|
 | `study_30` | Estudar 30 min hoje | soma de `minutes` das sessões do dia ≥ 30 | +25 |
 | `two_summaries` | Escrever 2 resumos | 2 sessões do dia com `summary` não vazio | +15 |
-| `quality_session` | Sessão de qualidade | 1 sessão do dia com ≥ 25 min e nota ≥ 4 | +30 |
+| `quality_session` | Sessão de qualidade (25 min, nota 4+) | 1 sessão do dia com ≥ 25 min e nota ≥ 4 | +30 |
 
-- Progresso é **derivado** das sessões do dia (nada é gravado até a coleta).
+- Progresso é **derivado** das sessões do dia (nada é gravado até a coleta). O valor não é limitado à meta (ex.: `study_30` com 95 min mostra 95); resumo só com espaços não conta.
 - A coleta grava um `QuestClaim` (`day`, `code`, `xp`) com unicidade por dia e código: coletar duas vezes é impossível.
 - Missão completa e não coletada até a meia-noite **expira** (sem XP). Isso cria um motivo leve para abrir o app no mesmo dia.
 - Se uma sessão for excluída depois da coleta, o XP da missão **permanece** (sem punição retroativa).

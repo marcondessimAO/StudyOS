@@ -25,7 +25,7 @@ Plano detalhado, tarefa por tarefa: [12-plano-de-execucao](12-plano-de-execucao.
 - [x] T03 · Banco: schema, migração e seed
 - [x] T04 · Datas no fuso do app
 - [x] T05 · Gamificação: XP, nível, streak, conquistas
-- [ ] T06 · Missões do dia
+- [x] T06 · Missões do dia
 - [ ] T07 · Recálculo do perfil
 - [ ] T08 · Autenticação
 - [ ] T09 · Matérias

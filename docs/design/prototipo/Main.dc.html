@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>StudyOS · Dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;family=Unbounded:wght@500;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E0F14}
+a{color:#C4B5FD}a:hover{color:#DDD6FE}
+.lift{transition:transform .15s,box-shadow .15s}
+.lift:hover{transform:translate(-3px,-3px)}
+.press{transition:transform .1s,box-shadow .1s}
+.press:hover{transform:translate(-2px,-2px)}
+.press:active{transform:translate(3px,3px);box-shadow:0 0 0 transparent!important}
+.cell{transition:transform .12s;cursor:pointer;border:0;padding:0}
+.cell:hover{transform:scale(1.35);position:relative;z-index:2}
+.seg{display:block;transform-origin:bottom}
+.seg.new{animation:segpop .5s cubic-bezier(.2,1.8,.4,1)}
+@keyframes segpop{0%{transform:scaleY(.1);filter:brightness(2.2)}60%{transform:scaleY(1.6)}100%{transform:scaleY(1)}}
+.flame{animation:flame 1.4s ease-in-out infinite;transform-origin:bottom center}
+@keyframes flame{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.08,.94) rotate(-3deg)}60%{transform:scale(.95,1.07) rotate(3deg)}}
+.float{position:absolute;right:16px;top:-14px;animation:float 1.1s ease-out forwards;pointer-events:none}
+@keyframes float{0%{opacity:0;transform:translateY(10px) scale(.8)}20%{opacity:1;transform:translateY(0) scale(1.2)}100%{opacity:0;transform:translateY(-44px)}}
+.claim{animation:claim 1s ease-in-out infinite}
+@keyframes claim{50%{box-shadow:0 0 0 4px rgba(163,230,53,.35),3px 3px 0 #4D7C0F}}
+.toast{animation:toast .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes toast{0%{transform:translateY(30px);opacity:0}100%{transform:none;opacity:1}}
+.cursor{animation:cur 1s steps(2,start) infinite}
+@keyframes cur{to{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 1400px; background-color: #0E0F14; background-image: radial-gradient(#23263A 1px, transparent 1px); background-size: 22px 22px; color: #F3F4F8; font-family: Inter, system-ui, sans-serif">
+
+<header style="border-bottom: 1px solid #2A2E3D; background: #0E0F14">
+<div style="max-width: 1360px; margin: 0 auto; box-sizing: border-box; padding: 0 32px; min-height: 64px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px">
+<span style="display: flex; align-items: center; gap: 4px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 18px; letter-spacing: -0.02em">study<span style="color: #A78BFA">OS</span><span class="cursor" style="display: inline-block; width: 9px; height: 18px; background: #A3E635; margin-left: 4px"></span></span>
+<nav aria-label="Principal" style="display: flex; flex-wrap: wrap; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px">
+<a href="#" style="padding: 8px 12px; background: #F3F4F8; color: #0E0F14; text-decoration: none; font-weight: 700">HOJE</a>
+<a href="#" style="padding: 8px 12px; color: #A1A7B8; text-decoration: none; font-weight: 500">SESSÕES</a>
+<a href="#" style="padding: 8px 12px; color: #A1A7B8; text-decoration: none; font-weight: 500">MATÉRIAS</a>
+<a href="#" style="padding: 8px 12px; color: #A1A7B8; text-decoration: none; font-weight: 500">NOTAS</a>
+<a href="#" style="padding: 8px 12px; color: #A1A7B8; text-decoration: none; font-weight: 500">CONQUISTAS</a>
+</nav>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 12px; font-family: 'JetBrains Mono', monospace">
+<span style="font-weight: 800; font-size: 14px; color: #0E0F14; background: #A78BFA; padding: 4px 8px">LV.05</span>
+<div style="display: flex; gap: 2px; align-items: end; height: 16px" role="img" aria-label="{{xp}} de 1500 XP para o nível 6">
+<sc-for list="{{levelSegs}}" as="s" hint-placeholder-count="20"><span class="{{s.cls}}" style="width: 6px; height: 16px; background: {{s.c}}"></span></sc-for>
+</div>
+<span aria-live="polite" style="font-size: 12px; color: #A1A7B8; font-variant-numeric: tabular-nums">{{xp}}/1500 XP</span>
+</div>
+</div>
+</header>
+
+<main style="max-width: 1360px; margin: 0 auto; box-sizing: border-box; padding: 32px 32px 56px; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px">
+
+<section style="flex: 999 1 560px; min-width: 0; padding: 28px; background: #171922; border: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A1A7B8; letter-spacing: 0.08em">// SEG 23 NOV · 21:48</span>
+<h1 style="margin: 0; font-family: Unbounded, sans-serif; font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15">Bora estudar, Marcondes.</h1>
+</div>
+<label for="cmd" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">O que vai estudar agora</label>
+<div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; height: 60px; background: #0E0F14; border: 1px solid #3A3F52">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #A3E635">&gt;</span>
+<input id="cmd" type="text" placeholder="o que vai estudar agora?" style="flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; color: #F3F4F8; font-family: 'JetBrains Mono', monospace; font-size: 16px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A1A7B8; border: 1px solid #3A3F52; padding: 3px 7px">Ctrl K</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A1A7B8">INÍCIO RÁPIDO:</span>
+<sc-for list="{{subjects}}" as="s" hint-placeholder-count="4">
+<a href="Timer.dc.html" class="press" style="display: flex; align-items: center; gap: 8px; height: 44px; box-sizing: border-box; padding: 0 16px; background: #0E0F14; border: 1px solid {{s.color}}; color: #F3F4F8; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 3px 3px 0 {{s.color}}">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="{{s.color}}" aria-hidden="true"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5z"></path></svg>{{s.upper}}</a>
+</sc-for>
+</div>
+</section>
+
+<section class="lift" style="flex: 1 1 300px; min-width: 0; padding: 24px; background: #FB923C; color: #1A0E05; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; box-shadow: 6px 6px 0 #4A2E1C">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; letter-spacing: 0.08em">STREAK</span>
+<svg class="flame" width="28" height="28" viewBox="0 0 24 24" fill="#1A0E05" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 10.5A5 5 0 0 1 7 12.5c0-2 .9-3.3 2-4.5.2 1.6 1 2.6 2 3 0-3 0-6 1-9z"></path></svg>
+</div>
+<div style="display: flex; align-items: baseline; gap: 10px">
+<span style="font-family: Unbounded, sans-serif; font-size: 96px; font-weight: 800; line-height: 0.9; letter-spacing: -0.04em">08</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700">DIAS</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+<div style="width: 100%; height: 26px; background: {{d.bg}}; border: 2px solid #1A0E05; box-sizing: border-box"></div>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700">{{d.l}}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700">RECORDE 12 · FALTAM 4</span>
+</section>
+</div>
+
+<section aria-label="Resumo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); background: #171922; border: 1px solid #2A2E3D">
+<sc-for list="{{stats}}" as="st" hint-placeholder-count="4">
+<div style="padding: 20px 24px; border-right: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A1A7B8; letter-spacing: 0.08em">{{st.label}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 800; letter-spacing: -0.03em; color: {{st.color}}; font-variant-numeric: tabular-nums">{{st.value}}</span>
+<span style="font-size: 13px; color: #A1A7B8">{{st.note}}</span>
+</div>
+</sc-for>
+</section>
+
+<section aria-labelledby="quests-h" style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+<h2 id="quests-h" style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.08em">MISSÕES_DO_DIA</h2>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A1A7B8">renovam em 02:12:40 · {{questsDone}}/3 coletadas</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px">
+<sc-for list="{{quests}}" as="q" hint-placeholder-count="3">
+<div class="lift" style="position: relative; padding: 18px; background: {{q.bg}}; border: 1px solid {{q.border}}; display: flex; flex-direction: column; gap: 12px">
+<sc-if value="{{q.floating}}" hint-placeholder-val="{{ false }}">
+<span class="float" style="font-family: Unbounded, sans-serif; font-size: 22px; font-weight: 800; color: #A3E635; text-shadow: 3px 3px 0 #7C3AED">+{{q.xp}} XP</span>
+</sc-if>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px">
+<span style="font-size: 15px; font-weight: 600; text-decoration: {{q.strike}}; color: {{q.titleColor}}">{{q.title}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: #A3E635">+{{q.xp}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px" role="img" aria-label="{{q.aria}}">
+<sc-for list="{{q.segs}}" as="g" hint-placeholder-count="10"><span style="height: 8px; background: {{g.c}}"></span></sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A1A7B8">{{q.progress}}</span>
+<sc-if value="{{q.claimable}}" hint-placeholder-val="{{ true }}">
+<button type="button" class="press claim" onClick="{{q.claim}}" style="height: 44px; padding: 0 16px; border: 0; background: #A3E635; color: #0E0F14; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 3px 3px 0 #4D7C0F">COLETAR</button>
+</sc-if>
+<sc-if value="{{q.claimed}}" hint-placeholder-val="{{ false }}">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 800; color: #A3E635">✓ COLETADA</span>
+</sc-if>
+<sc-if value="{{q.locked}}" hint-placeholder-val="{{ false }}">
+<a href="Timer.dc.html" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700">fazer agora →</a>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px">
+
+<section style="flex: 3 1 520px; min-width: 0; padding: 24px; background: #171922; border: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+<h2 style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.08em">CONSISTÊNCIA_12_SEMANAS</h2>
+<span aria-live="polite" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{dayColor}}">{{dayInfo}}</span>
+</div>
+<div style="overflow-x: auto">
+<div style="display: flex; gap: 10px; min-width: 520px">
+<div style="display: grid; grid-template-rows: repeat(7, 22px); gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #A1A7B8; align-items: center">
+<span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span>
+</div>
+<div style="flex: 1; display: grid; grid-template-rows: repeat(7, 22px); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px">
+<sc-for list="{{cells}}" as="c" hint-placeholder-count="84">
+<button type="button" class="cell" onClick="{{c.pick}}" aria-label="{{c.label}}" style="background: {{c.bg}}; outline: {{c.ring}}; outline-offset: 1px"></button>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #A1A7B8; justify-content: flex-end">
+<span style="margin-right: 4px">0</span>
+<div style="width: 14px; height: 14px; background: #222533"></div>
+<div style="width: 14px; height: 14px; background: #3B2A6B"></div>
+<div style="width: 14px; height: 14px; background: #5B3BB0"></div>
+<div style="width: 14px; height: 14px; background: #7C3AED"></div>
+<div style="width: 14px; height: 14px; background: #A78BFA"></div>
+<span style="margin-left: 4px">3h+</span>
+</div>
+</section>
+
+<section style="flex: 2 1 340px; min-width: 0; padding: 24px; background: #171922; border: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 20px">
+<h2 style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.08em">METAS_DA_SEMANA</h2>
+<sc-for list="{{subjects}}" as="s" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-family: 'JetBrains Mono', monospace">
+<span style="font-size: 13px; font-weight: 700; color: {{s.text}}">{{s.upper}}</span>
+<span style="font-size: 12px; color: #A1A7B8">{{s.done}}/{{s.goal}} · ★{{s.rating}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px" role="img" aria-label="{{s.aria}}">
+<sc-for list="{{s.segs}}" as="g" hint-placeholder-count="12"><span style="height: 14px; background: {{g.c}}"></span></sc-for>
+</div>
+</div>
+</sc-for>
+</section>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px">
+
+<section style="flex: 3 1 520px; min-width: 0; background: #0B0C10; border: 1px solid #2A2E3D; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid #2A2E3D">
+<h2 style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.08em">LOG_DE_SESSÕES</h2>
+<a href="#" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500">ver tudo →</a>
+</div>
+<div style="padding: 10px 20px 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; overflow-x: auto">
+<sc-for list="{{sessions}}" as="r" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: 92px 96px minmax(180px, 1fr) 72px 70px 64px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px dashed #23263A; min-width: 600px">
+<span style="color: #A1A7B8">{{r.when}}</span>
+<span style="color: {{r.color}}; font-weight: 700">{{r.subj}}</span>
+<span style="font-family: Inter, sans-serif; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.topic}}</span>
+<span>{{r.time}}</span>
+<span style="color: #FDE047">{{r.stars}}</span>
+<span style="color: #A3E635; font-weight: 700; text-align: right">+{{r.xp}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="flex: 2 1 340px; min-width: 0; padding: 24px; background: #171922; border: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<h2 style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.08em">CONQUISTAS</h2>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A1A7B8">04/10</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{badges}}" as="b" hint-placeholder-count="6">
+<button type="button" class="press" onClick="{{b.pick}}" aria-label="{{b.name}}: {{b.hint}}" style="aspect-ratio: 1; background: {{b.bg}}; border: 2px solid {{b.border}}; box-shadow: {{b.shadow}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px; text-align: center; cursor: pointer; font: inherit; color: inherit">
+<span style="font-family: Unbounded, sans-serif; font-size: 20px; font-weight: 800; color: {{b.color}}">{{b.icon}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: {{b.text}}; line-height: 1.25">{{b.name}}</span>
+</button>
+</sc-for>
+</div>
+<div aria-live="polite" style="padding: 12px; background: #0E0F14; border: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px">
+<span style="font-weight: 800; color: {{badge.color}}">{{badge.name}}</span><span style="color: #A1A7B8">{{badge.state}}</span>
+</div>
+<span style="font-size: 13px; color: #A1A7B8">{{badge.hint}}</span>
+<div style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px">
+<sc-for list="{{badge.segs}}" as="g" hint-placeholder-count="10"><span style="height: 6px; background: {{g.c}}"></span></sc-for>
+</div>
+</div>
+</section>
+</div>
+
+</main>
+<sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
+<div role="status" class="toast" style="position: fixed; right: 24px; bottom: 24px; z-index: 10; max-width: 340px; padding: 16px 18px; background: #171922; border: 2px solid #A3E635; box-shadow: 5px 5px 0 #7C3AED; display: flex; align-items: center; gap: 14px">
+<span style="font-family: Unbounded, sans-serif; font-size: 22px; font-weight: 800; color: #A3E635">+{{toast.xp}}</span>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 800; color: #F3F4F8">{{toast.title}}</span>
+<span style="font-size: 13px; color: #A1A7B8">{{toast.text}}</span>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { t: 0, xp: 1430, prevXp: 1430, claimed: {}, floating: null, day: 77, badge: 4, toast: null };
+  }
+  componentDidMount() {
+    let reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (reduce) { this.setState({ t: 1 }); return; }
+    const start = Date.now();
+    this.iv = setInterval(() => {
+      const t = Math.min((Date.now() - start) / 900, 1);
+      this.setState({ t: 1 - Math.pow(1 - t, 3) });
+      if (t >= 1) clearInterval(this.iv);
+    }, 30);
+  }
+  componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ft); clearTimeout(this.tt); }
+  claim(q) {
+    if (this.state.claimed[q.id]) return;
+    const xp = this.state.xp + q.xp;
+    const left = 1500 - xp;
+    this.setState({
+      prevXp: this.state.xp, xp,
+      claimed: Object.assign({}, this.state.claimed, { [q.id]: true }),
+      floating: q.id,
+      toast: { xp: q.xp, title: 'MISSÃO COMPLETA', text: left > 0 ? 'Faltam ' + left + ' XP para o LV.06. Uma sessão resolve.' : 'Nível 6 liberado!' }
+    });
+    clearTimeout(this.ft); clearTimeout(this.tt);
+    this.ft = setTimeout(() => this.setState({ floating: null }), 1100);
+    this.tt = setTimeout(() => this.setState({ toast: null }), 3200);
+  }
+  renderVals() {
+    const S = this.state;
+    const pad = (n) => String(n).padStart(2, '0');
+    const hm = (m) => pad(Math.floor(m / 60)) + ':' + pad(m % 60);
+    const seg = (n, filled, on, off) => Array.from({ length: n }, (_, i) => ({ c: i < filled ? on : off }));
+    const lvFill = Math.min(Math.floor((S.xp - 1000) / 25), 20);
+    const prevFill = Math.min(Math.floor((S.prevXp - 1000) / 25), 20);
+    const levelSegs = Array.from({ length: 20 }, (_, i) => ({
+      c: i < prevFill ? '#A78BFA' : i < lvFill ? '#A3E635' : '#2A2E3D',
+      cls: i >= prevFill && i < lvFill ? 'seg new' : 'seg'
+    }));
+    const scale = ['#222533', '#3B2A6B', '#5B3BB0', '#7C3AED', '#A78BFA'];
+    const dayNames = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
+    const lvls = [];
+    for (let i = 0; i < 84; i++) {
+      const w = Math.floor(i / 7);
+      const d = i % 7;
+      let v = (i * 37 + w * 11 + d * 5) % 9;
+      if (d === 6 && v > 3) v = v - 4;
+      if (w > 7) v = v + 2;
+      let lvl = v <= 1 ? 0 : v <= 3 ? 1 : v <= 5 ? 2 : v <= 7 ? 3 : 4;
+      if (i > 76) lvl = i === 83 ? 0 : 3;
+      if (i === 77) lvl = 2;
+      lvls.push(lvl);
+    }
+    const dateOf = (i) => {
+      const d = new Date(2026, 10, 23 - (77 - i));
+      return dayNames[i % 7] + ' ' + pad(d.getDate()) + '/' + pad(d.getMonth() + 1);
+    };
+    const minsOf = (lvl, i) => lvl === 0 ? 0 : lvl * 35 + (i % 4) * 7;
+    const cells = lvls.map((lvl, i) => ({
+      bg: i > 77 ? '#14161E' : scale[lvl],
+      ring: i === S.day ? '2px solid #A3E635' : 'none',
+      label: i > 77 ? 'dia futuro' : dateOf(i) + ', ' + (lvl === 0 ? 'sem estudo' : minsOf(lvl, i) + ' minutos'),
+      pick: () => { if (i <= 77) this.setState({ day: i }); }
+    }));
+    const dl = lvls[S.day];
+    const dayInfo = (S.day === 77 ? 'hoje' : dateOf(S.day)) + ' · ' + (dl === 0 ? 'sem estudo' : (S.day === 77 ? '1h35 · 2 sessões' : hm(minsOf(dl, S.day)).replace(':', 'h') + ' · ' + (1 + (S.day % 3)) + ' sessões'));
+    const week = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((l, i) => ({ l, bg: i === 0 ? '#1A0E05' : 'transparent' }));
+    const t = S.t;
+    const stats = [
+      { label: 'HOJE', value: hm(Math.round(95 * t)), note: '2 sessões', color: '#F3F4F8' },
+      { label: 'SEMANA', value: hm(Math.round(610 * t)), note: 'de 20:00 na meta · 51%', color: '#F3F4F8' },
+      { label: 'XP HOJE', value: '+' + Math.round(164 * t + (S.xp - 1430)), note: 'bônus da primeira do dia pego', color: '#A3E635' },
+      { label: 'APROVEITAMENTO', value: (3.9 * t).toFixed(1), note: 'melhor horário 19h–22h', color: '#FDE047' }
+    ];
+    const subjects = [
+      { name: 'Backend', color: '#8B5CF6', text: '#C4B5FD', mins: 250, goalM: 360, done: '4h10', goal: '6h', rating: '4.2' },
+      { name: 'Segurança', color: '#22C55E', text: '#86EFAC', mins: 180, goalM: 240, done: '3h00', goal: '4h', rating: '4.0' },
+      { name: 'Infra', color: '#3B82F6', text: '#93C5FD', mins: 80, goalM: 240, done: '1h20', goal: '4h', rating: '3.6' },
+      { name: 'Faculdade', color: '#F97316', text: '#FDBA74', mins: 100, goalM: 360, done: '1h40', goal: '6h', rating: '3.4' }
+    ].map(s => ({ ...s, upper: s.name.toUpperCase(), segs: seg(12, Math.round(s.mins / s.goalM * 12 * t), s.color, '#262A38'), aria: s.done + ' de ' + s.goal }));
+    const questDefs = [
+      { id: 'q1', title: 'Estudar 30 min hoje', xp: 25, done: 10, progress: '95/30 min' },
+      { id: 'q2', title: 'Escrever 2 resumos', xp: 15, done: 10, progress: '2/2 resumos' },
+      { id: 'q3', title: 'Sessão de Faculdade com nota 4+', xp: 30, done: 0, progress: '0/1 sessão' }
+    ];
+    const quests = questDefs.map(q => {
+      const claimed = !!S.claimed[q.id];
+      const complete = q.done >= 10;
+      return {
+        ...q,
+        segs: seg(10, Math.round(q.done * t), complete ? '#A3E635' : '#7C3AED', '#262A38'),
+        aria: q.progress,
+        claimable: complete && !claimed,
+        claimed,
+        locked: !complete,
+        floating: S.floating === q.id,
+        bg: claimed ? '#12131A' : complete ? '#1A2210' : '#171922',
+        border: claimed ? '#2A2E3D' : complete ? '#4D7C0F' : '#2A2E3D',
+        titleColor: claimed ? '#7D8396' : '#F3F4F8',
+        strike: claimed ? 'line-through' : 'none',
+        claim: () => this.claim(q)
+      };
+    });
+    const sessions = [
+      { when: 'hoje 20:10', subj: 'BACKEND', color: '#C4B5FD', topic: 'Índices compostos no PostgreSQL', time: '1h05', stars: '★★★★★', xp: 98 },
+      { when: 'hoje 18:30', subj: 'SEGURANÇA', color: '#86EFAC', topic: 'OWASP Top 10: injeção', time: '0h30', stars: '★★★★☆', xp: 66 },
+      { when: 'ontem 21:00', subj: 'INFRA', color: '#93C5FD', topic: 'Docker Compose: redes', time: '0h45', stars: '★★★☆☆', xp: 45 },
+      { when: 'ontem 15:20', subj: 'FACULDADE', color: '#FDBA74', topic: 'Engenharia de requisitos', time: '0h50', stars: '★★☆☆☆', xp: 40 }
+    ];
+    const on = { bg: '#1B1830', border: '#A78BFA', color: '#A78BFA', text: '#F3F4F8', shadow: '4px 4px 0 #4C3A8F' };
+    const off = { bg: '#12131A', border: '#2A2E3D', color: '#3A3F52', text: '#7D8396', shadow: 'none' };
+    const badgeDefs = [
+      { name: 'PRIMEIRO PASSO', icon: '01', hint: 'Completar a primeira sessão.', got: true, p: 10 },
+      { name: 'SEMANA PERFEITA', icon: '7D', hint: 'Estudar 7 dias seguidos.', got: true, p: 10 },
+      { name: 'MADRUGADOR', icon: '6AM', hint: 'Começar uma sessão antes das 7h.', got: true, p: 10 },
+      { name: 'FOCO TOTAL', icon: '45+', hint: 'Sessão de 45 min ou mais com nota 5.', got: true, p: 10 },
+      { name: '50 HORAS', icon: '50H', hint: '3.000 min acumulados. Você está em 2.540.', got: false, p: 8 },
+      { name: 'HÁBITO FORMADO', icon: '30D', hint: '30 dias seguidos. Você está em 8.', got: false, p: 3 }
+    ];
+    const badges = badgeDefs.map((b, i) => ({
+      ...b, ...(b.got ? on : off),
+      border: i === S.badge ? '#A3E635' : (b.got ? on.border : off.border),
+      pick: () => this.setState({ badge: i })
+    }));
+    const cur = badgeDefs[S.badge];
+    const badge = {
+      name: cur.name,
+      hint: cur.hint,
+      color: cur.got ? '#A78BFA' : '#F3F4F8',
+      state: cur.got ? 'DESBLOQUEADA' : cur.p * 10 + '%',
+      segs: seg(10, cur.p, cur.got ? '#A78BFA' : '#A3E635', '#262A38')
+    };
+    return {
+      xp: S.xp, levelSegs, cells, dayInfo, dayColor: dl === 0 ? '#A1A7B8' : '#C4B5FD', week, stats, subjects, quests,
+      questsDone: Object.keys(S.claimed).length, sessions, badges, badge, toast: S.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

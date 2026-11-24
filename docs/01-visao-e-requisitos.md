@@ -29,7 +29,7 @@ opcional, desenhado para ser **rápido de usar** e **gratificante** (feedback im
 ### Dentro (MVP e depois)
 - Cronômetro de sessão (livre e Pomodoro) com matéria, tópico e tipo de estudo.
 - Avaliação de aproveitamento (1 a 5) e resumo de uma linha ao fim da sessão.
-- Gamificação: XP, níveis, streak, conquistas, metas semanais.
+- Gamificação: XP, níveis, streak, conquistas, metas semanais, missões do dia.
 - Dashboard: horas, heatmap, aproveitamento por matéria.
 - Notas em Markdown ligadas a sessões e tópicos.
 - Backlog de tópicos e planejamento semanal.
@@ -53,7 +53,7 @@ opcional, desenhado para ser **rápido de usar** e **gratificante** (feedback im
 | RF-05 | Calcular e exibir recompensa (XP, bônus, nível, streak, conquistas) ao finalizar | MVP |
 | RF-06 | Dashboard com horas (hoje, semana, mês), heatmap, horas e aproveitamento por matéria | MVP |
 | RF-07 | Histórico de sessões com filtro por matéria e período; editar e excluir | MVP |
-| RF-08 | Metas semanais por matéria com barra de progresso | V2 |
+| RF-08 | Metas semanais por matéria com barra de progresso | MVP |
 | RF-09 | Notas em Markdown ligadas a sessão/tópico, com busca | V2 |
 | RF-10 | Backlog de tópicos com prioridade e status | V2 |
 | RF-11 | Conquistas com notificação visual | MVP |
@@ -61,6 +61,7 @@ opcional, desenhado para ser **rápido de usar** e **gratificante** (feedback im
 | RF-13 | IA: resumir notas, gerar flashcards, relatório semanal | V3 |
 | RF-14 | PWA instalável e lembretes | V3 |
 | RF-15 | Exportar todos os dados (JSON) | V2 |
+| RF-16 | Missões do dia com coleta manual de XP | MVP |
 
 ## Requisitos não funcionais
 

@@ -35,6 +35,13 @@ erDiagram
     string code UK
     datetime unlockedAt
   }
+  QuestClaim {
+    int id PK
+    string day "YYYY-MM-DD em APP_TZ"
+    string code
+    int xp
+    datetime claimedAt
+  }
 ```
 
 ## Tabelas
@@ -56,6 +63,10 @@ Matéria/área de estudo. `weeklyGoal` em minutos (0 = sem meta). Excluir uma ma
 
 ### Achievement
 `code` único; a conquista é desbloqueada uma vez. Catálogo de códigos em [05-gamificacao](05-gamificacao.md).
+
+### QuestClaim (MVP)
+Registro da coleta de uma missão do dia. `@@unique([day, code])` garante uma coleta por missão por dia.
+O XP fica gravado na linha para o recálculo ser exato mesmo que as regras de missão mudem depois.
 
 ## Evolução prevista do schema
 

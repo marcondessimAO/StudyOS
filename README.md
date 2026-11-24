@@ -6,19 +6,19 @@ O StudyOS registra **quanto** você estudou, **o quê** estudou e **como foi** o
 finalizada vira XP, alimenta o streak e enche a barra da meta semanal. Notas em Markdown, revisão espaçada e
 IA (opcional) entram nas próximas fases.
 
-> **Status:** fase de documentação e arquitetura. O código do MVP começa a partir desta base.
+> **Status:** documentação, design e plano de execução prontos. Implementação do MVP em andamento, seguindo [docs/12-plano-de-execucao.md](docs/12-plano-de-execucao.md).
 
 ## Funcionalidades
 
 **MVP**
-- Cronômetro de estudo (livre ou Pomodoro) que sobrevive a recarregar a página
+- Cronômetro em blocos (livre ou Pomodoro) que sobrevive a recarregar a página
 - Fechamento de sessão em segundos: aproveitamento de 1 a 5, tipo de estudo e resumo de uma linha
-- XP ponderado pelo aproveitamento, níveis, streak diário e conquistas
-- Tela de recompensa animada
-- Dashboard com horas, heatmap de consistência e desempenho por matéria
+- XP ponderado pelo aproveitamento, níveis, streak diário, conquistas e missões do dia
+- Tela de recompensa animada em sequência, com level up, confete e som opcional
+- Dashboard com horas, heatmap clicável, metas semanais por matéria e log de sessões
 
 **Próximas fases**
-- Metas semanais, backlog de tópicos e notas em Markdown ligadas às sessões
+- Backlog de tópicos e notas em Markdown ligadas às sessões
 - Revisão espaçada e flashcards
 - IA para organizar notas, gerar flashcards e escrever um relatório semanal
 - PWA instalável
@@ -67,8 +67,10 @@ Detalhes, backup e restauração em [docs/07-deploy.md](docs/07-deploy.md).
 
 ```
 .
+├── CLAUDE.md           contexto e regras para o Claude Code
 ├── docs/               documentação do projeto (comece por docs/README.md)
-│   └── adr/            decisões de arquitetura
+│   ├── adr/            decisões de arquitetura
+│   └── design/         fontes do protótipo de telas
 ├── prisma/             schema e migrações do banco
 ├── src/                código da aplicação (Next.js)
 ├── deploy/             Caddyfile e arquivos de operação
@@ -77,11 +79,22 @@ Detalhes, backup e restauração em [docs/07-deploy.md](docs/07-deploy.md).
 └── docker-compose.dev.yml   banco para desenvolvimento
 ```
 
+## Design
+
+Visual "painel de jogo + terminal": escuro, fontes mono, cantos retos, sombras duras, barras em blocos e
+recompensa animada em sequência. Tokens e componentes em [docs/11-design.md](docs/11-design.md); fontes do
+protótipo em [docs/design/prototipo/](docs/design/prototipo/).
+
 ## Documentação
 
 Toda a documentação está em [`docs/`](docs/README.md):
 visão e requisitos, arquitetura, modelo de dados, contrato da API, regras de gamificação, integração com IA,
-deploy, segurança, roadmap e convenções.
+deploy, segurança, roadmap, convenções, design e plano de execução.
+
+## Desenvolvimento com Claude Code
+
+O projeto é construído com o Claude Code CLI. O [`CLAUDE.md`](CLAUDE.md) dá o contexto e as regras a cada sessão,
+e o [plano de execução](docs/12-plano-de-execucao.md) traz as tarefas do MVP em ordem, cada uma com um prompt pronto.
 
 ## Roadmap
 

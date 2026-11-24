@@ -12,4 +12,6 @@
 | 08 | [Segurança](08-seguranca.md) | Autenticação, proteção de requisições, checklist |
 | 09 | [Roadmap](09-roadmap.md) | MVP, V2, V3 |
 | 10 | [Convenções](10-convencoes.md) | Git, código, testes, CI |
+| 11 | [Design](11-design.md) | Identidade visual, tokens, componentes, animações e som |
+| 12 | [Plano de execução](12-plano-de-execucao.md) | Tarefas do MVP em ordem, com prompts para o Claude Code |
 | — | [ADRs](adr/) | Registro das decisões de arquitetura |

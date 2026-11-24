@@ -61,19 +61,27 @@ Validações: `endedAt` > `startedAt`; `endedAt` não pode estar no futuro (tole
 Resposta `201`:
 ```json
 {
-  "session": { "id": 42, "minutes": 63, "xp": 82 },
+  "session": { "id": 42, "minutes": 63, "xp": 96 },
   "reward": {
-    "xpGained": 82,
+    "xpBefore": 980,
+    "xpGained": 96,
+    "base": { "minutes": 63, "multiplier": 1.2, "xp": 76 },
     "bonuses": [{ "code": "first_of_day", "xp": 20 }],
-    "xpTotal": 1250,
+    "xpTotal": 1076,
+    "levelBefore": 4,
     "level": 5,
-    "levelUp": false,
+    "levelUp": true,
     "streak": 8,
     "streakIncreased": true,
-    "newAchievements": ["streak_7"]
+    "streakBefore": 7,
+    "newAchievements": ["streak_7"],
+    "subjectWeek": { "minutesBefore": 250, "minutes": 313, "goal": 360 },
+    "questsCompleted": ["study_30"]
   }
 }
 ```
+Os campos `*Before` existem para a tela de recompensa animar do valor antigo para o novo.
+Cálculo do exemplo: `round(63 × 1.2) = 76` + 20 (primeira do dia) = 96; 980 → 1076 cruza 1000, logo nível 4 → 5. Regras em [05-gamificacao](05-gamificacao.md).
 
 ### `GET /api/sessions`
 Query: `from`, `to` (ISO), `subjectId`, `limit` (padrão 30, máx. 100), `cursor` (id da última sessão da página anterior).
@@ -100,9 +108,34 @@ os bônus já concedidos.
 ```
 `heatmap` cobre as últimas 12 semanas, apenas dias com estudo. Semana começa na segunda-feira (fuso `APP_TZ`).
 
+## Missões do dia
+
+### `GET /api/quests`
+```json
+{
+  "day": "2026-11-23",
+  "resetsAt": "2026-11-24T03:00:00.000Z",
+  "items": [
+    { "code": "study_30", "title": "Estudar 30 min hoje", "xp": 25, "progress": 95, "target": 30, "status": "claimable" },
+    { "code": "two_summaries", "title": "Escrever 2 resumos", "xp": 15, "progress": 2, "target": 2, "status": "claimed" },
+    { "code": "quality_session", "title": "Sessão de qualidade (25 min, nota 4+)", "xp": 30, "progress": 0, "target": 1, "status": "in_progress" }
+  ]
+}
+```
+`status`: `in_progress | claimable | claimed`.
+
+### `POST /api/quests/:code/claim`
+`201` com `{ "xpGained": 25, "xpBefore": 1430, "xpTotal": 1455, "levelBefore": 5, "level": 5, "levelUp": false }`.
+`409` se já coletada hoje; `400` se a missão não estiver completa; `404` se o código não existir.
+
+## Saúde
+
+### `GET /api/health`
+Sem autenticação. `200 { "ok": true }` se o banco responde; `503` caso contrário.
+
 ## Rotas futuras (V2/V3)
 
-`/api/topics`, `/api/notes` (com `?q=` para busca), `/api/reviews/due`, `/api/ai/summarize`,
+`/api/topics`, `/api/notes` (com `?q=` para busca), `/api/export`, `/api/reviews/due`, `/api/ai/summarize`,
 `/api/ai/flashcards`, `/api/ai/weekly-report`. Contrato detalhado quando a fase começar.
 
 ## Validação

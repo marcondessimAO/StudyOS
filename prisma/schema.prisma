@@ -48,3 +48,13 @@ model Achievement {
   code       String   @unique
   unlockedAt DateTime @default(now())
 }
+
+model QuestClaim {
+  id        Int      @id @default(autoincrement())
+  day       String // "YYYY-MM-DD" no fuso APP_TZ
+  code      String // study_30 | two_summaries | quality_session
+  xp        Int
+  claimedAt DateTime @default(now())
+
+  @@unique([day, code])
+}

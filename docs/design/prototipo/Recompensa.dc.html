@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Recompensa da sessão</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;family=Unbounded:wght@500;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E0F14}
+a{color:#C4B5FD}a:hover{color:#DDD6FE}
+.rv{opacity:0;transform:translateY(16px) scale(.97);transition:opacity .3s ease,transform .5s cubic-bezier(.2,1.5,.4,1)}
+.rv.on{opacity:1;transform:none}
+.seg{display:block;transform-origin:bottom}
+.seg.new{animation:segpop .45s cubic-bezier(.2,1.8,.4,1)}
+@keyframes segpop{0%{transform:scaleY(.1);filter:brightness(2)}60%{transform:scaleY(1.6)}100%{transform:scaleY(1)}}
+.fall{position:absolute;top:-20px;animation:fall 2.4s cubic-bezier(.25,.6,.5,1) forwards}
+@keyframes fall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(900px) rotate(720deg)}}
+.flip{animation:flip .55s ease}
+@keyframes flip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+.bump{animation:bump .25s ease}
+@keyframes bump{50%{transform:scale(1.08)}}
+.lvup{animation:lvup .9s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes lvup{0%{transform:scale(.2) rotate(-8deg);opacity:0}60%{transform:scale(1.15) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.flash{animation:flash .6s ease}
+@keyframes flash{0%,100%{box-shadow:0 0 0 0 rgba(163,230,53,0)}40%{box-shadow:0 0 0 6px rgba(163,230,53,.9)}}
+.shine{animation:shine 1.6s ease-in-out infinite}
+@keyframes shine{50%{filter:brightness(1.35)}}
+.cta{transition:transform .12s,box-shadow .12s}
+.cta:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #A3E635!important}
+.cta:active{transform:translate(4px,4px);box-shadow:0 0 0 #A3E635!important}
+.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.03)}}
+.ghost{transition:background .15s,color .15s}
+.ghost:hover{background:#F3F4F8!important;color:#0E0F14!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="position: relative; overflow: hidden; width: 390px; height: 844px; box-sizing: border-box; padding: 18px 20px 24px; background-color: #0E0F14; background-image: radial-gradient(#23263A 1px, transparent 1px); background-size: 22px 22px; color: #F3F4F8; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 14px">
+
+<div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; z-index: 5">
+<sc-if value="{{burst}}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{confetti}}" as="p" hint-placeholder-count="40">
+<div class="fall" style="left: {{p.x}}; width: {{p.s}}; height: {{p.s}}; background: {{p.c}}; animation-delay: {{p.d}}"></div>
+</sc-for>
+</sc-if>
+</div>
+
+<div style="position: relative; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; z-index: 6">
+<button type="button" class="ghost" onClick="{{replay}}" style="height: 44px; padding: 0 14px; border: 1px solid #3A3F52; background: #171922; color: #F3F4F8; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer">↻ REPLAY</button>
+<button type="button" class="ghost" onClick="{{toggleSound}}" aria-pressed="{{soundPressed}}" style="height: 44px; padding: 0 14px; border: 1px solid #3A3F52; background: #171922; color: {{soundColor}}; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer">♪ SOM {{soundLabel}}</button>
+</div>
+
+<div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; padding-top: 8px">
+<span class="{{c.badge}}" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: #0E0F14; background: #A3E635; padding: 4px 10px">SESSÃO SALVA</span>
+<span class="{{xpClass}}" aria-live="polite" style="font-family: Unbounded, sans-serif; font-size: 72px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: #A3E635; text-shadow: 5px 5px 0 #7C3AED; font-variant-numeric: tabular-nums">+{{xp}}<span style="font-size: 32px"> XP</span></span>
+</div>
+
+<div style="position: relative; padding: 12px 16px; background: #0B0C10; border: 1px dashed #3A3F52; font-family: 'JetBrains Mono', monospace; font-size: 13px; display: flex; flex-direction: column; gap: 6px">
+<div class="{{c.r1}}" style="display: flex; gap: 8px"><span>62 min × 1.2 (nota 4)</span><span style="flex: 1; border-bottom: 1px dotted #3A3F52; margin-bottom: 4px"></span><span>74</span></div>
+<div class="{{c.r2}}" style="display: flex; gap: 8px"><span style="color: #FDBA74">bônus primeira do dia</span><span style="flex: 1; border-bottom: 1px dotted #3A3F52; margin-bottom: 4px"></span><span style="color: #FDBA74">+20</span></div>
+<div class="{{c.r3}}" style="display: flex; gap: 8px; padding-top: 6px; border-top: 1px solid #2A2E3D; font-weight: 800"><span>TOTAL</span><span style="flex: 1"></span><span style="color: #A3E635">94 XP</span></div>
+</div>
+
+<div class="{{c.level}}" style="position: relative; padding: 16px; background: #171922; border: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 10px">
+<div class="{{levelCardFlash}}" style="position: absolute; inset: 0; pointer-events: none"></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; font-family: 'JetBrains Mono', monospace">
+<span class="{{lvClass}}" style="font-size: 14px; font-weight: 800; color: #0E0F14; background: {{lvBg}}; padding: 3px 8px">LV.{{lv}}</span>
+<span style="font-size: 12px; color: #A1A7B8">{{lvText}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; align-items: end; height: 18px" role="img" aria-label="{{lvAria}}">
+<sc-for list="{{levelSegs}}" as="s" hint-placeholder-count="20"><span class="{{s.cls}}" style="height: 18px; background: {{s.c}}"></span></sc-for>
+</div>
+<sc-if value="{{levelUp}}" hint-placeholder-val="{{ false }}">
+<div class="lvup" style="position: absolute; left: 50%; top: -22px; margin-left: -96px; width: 192px; padding: 8px 0; background: #A3E635; color: #0E0F14; text-align: center; font-family: Unbounded, sans-serif; font-size: 18px; font-weight: 800; box-shadow: 4px 4px 0 #7C3AED">LEVEL UP!</div>
+</sc-if>
+</div>
+
+<div style="position: relative; display: flex; gap: 12px">
+<div class="{{c.streak}}" style="flex: 1; padding: 14px; background: #FB923C; color: #1A0E05; display: flex; flex-direction: column; gap: 4px; box-shadow: 4px 4px 0 #4A2E1C; perspective: 400px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; letter-spacing: 0.08em">STREAK</span>
+<span class="{{streakClass}}" style="display: inline-block; font-family: Unbounded, sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05">{{streak}}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700">{{streakNote}}</span>
+</div>
+<div class="{{c.goal}}" style="flex: 1.3; padding: 14px; background: #171922; border: 1px solid #2A2E3D; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #C4B5FD">META BACKEND</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800">{{goalText}}<span style="font-size: 13px; color: #A1A7B8; font-weight: 500"> / 6h</span></span>
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 2px; align-items: end; height: 10px" role="img" aria-label="{{goalAria}}">
+<sc-for list="{{goalSegs}}" as="g" hint-placeholder-count="12"><span class="{{g.cls}}" style="height: 10px; background: {{g.c}}"></span></sc-for>
+</div>
+</div>
+</div>
+
+<div class="{{c.ach}}" style="position: relative; padding: 14px; background: #1B1830; border: 2px solid #A78BFA; box-shadow: 5px 5px 0 #4C3A8F; display: flex; align-items: center; gap: 14px">
+<div class="shine" style="width: 58px; height: 58px; flex: none; background: #0E0F14; border: 2px solid #A78BFA; display: flex; align-items: center; justify-content: center; font-family: Unbounded, sans-serif; font-size: 18px; font-weight: 800; color: #A78BFA">23H</div>
+<div style="display: flex; flex-direction: column; gap: 3px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; color: #A3E635; letter-spacing: 0.08em">NOVA CONQUISTA</span>
+<span style="font-family: Unbounded, sans-serif; font-size: 18px; font-weight: 700">Coruja</span>
+<span style="font-size: 13px; color: #A1A7B8">Sessão encerrada depois das 23h</span>
+</div>
+</div>
+
+<a href="Main.dc.html" class="{{ctaClass}}" style="position: relative; margin-top: auto; height: 60px; background: #7C3AED; color: #FFFFFF; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; letter-spacing: 0.04em; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0 #A3E635">CONTINUAR →</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.timers = [];
+    this.state = this.initial();
+  }
+  initial() {
+    return { step: 0, xp: 0, fill: 17, levelUp: false, streak: 8, goal: 8, burst: false, bump: false, sound: this.state ? this.state.sound : false };
+  }
+  componentDidMount() { this.play(); }
+  componentWillUnmount() { this.clear(); }
+  clear() { this.timers.forEach(clearTimeout); this.timers.forEach(clearInterval); this.timers = []; }
+  at(ms, fn) { this.timers.push(setTimeout(fn, ms)); }
+  beep(freq, dur, type) {
+    if (!this.state.sound || !this.ctx) return;
+    try {
+      const o = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      o.type = type || 'square';
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.06, this.ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + (dur || 0.08));
+      o.connect(g); g.connect(this.ctx.destination);
+      o.start(); o.stop(this.ctx.currentTime + (dur || 0.08));
+    } catch (e) {}
+  }
+  play() {
+    this.clear();
+    let reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (reduce) {
+      this.setState({ step: 9, xp: 94, fill: 1, levelUp: true, streak: 9, goal: 10, burst: false });
+      return;
+    }
+    this.setState(this.initial());
+    this.at(80, () => { this.setState({ step: 1, burst: true }); this.beep(660, 0.1); });
+    this.at(250, () => {
+      const iv = setInterval(() => {
+        const next = Math.min(this.state.xp + 3, 94);
+        this.setState({ xp: next, bump: !this.state.bump });
+        if (next % 9 === 0) this.beep(400 + next * 6, 0.04);
+        if (next >= 94) clearInterval(iv);
+      }, 32);
+      this.timers.push(iv);
+    });
+    this.at(900, () => this.setState({ step: 2 }));
+    this.at(1100, () => this.setState({ step: 3 }));
+    this.at(1300, () => { this.setState({ step: 4 }); this.beep(880, 0.12); });
+    this.at(1600, () => this.setState({ step: 5 }));
+    [18, 19, 20].forEach((f, i) => this.at(1850 + i * 230, () => { this.setState({ fill: f }); this.beep(520 + i * 120, 0.07); }));
+    this.at(2650, () => {
+      this.setState({ levelUp: true, fill: 1, burst: false });
+      [523, 659, 784, 1046].forEach((f, i) => this.at(i * 90, () => this.beep(f, 0.14, 'triangle')));
+    });
+    this.at(2700, () => this.setState({ burst: true }));
+    this.at(3400, () => { this.setState({ step: 6 }); });
+    this.at(3700, () => { this.setState({ streak: 9 }); this.beep(740, 0.1); });
+    this.at(4000, () => this.setState({ step: 7 }));
+    this.at(4200, () => { this.setState({ goal: 9 }); this.beep(600, 0.06); });
+    this.at(4400, () => { this.setState({ goal: 10 }); this.beep(700, 0.06); });
+    this.at(4800, () => { this.setState({ step: 8 }); [784, 988, 1175].forEach((f, i) => this.at(i * 110, () => this.beep(f, 0.12, 'triangle'))); });
+    this.at(5400, () => this.setState({ step: 9 }));
+  }
+  renderVals() {
+    const s = this.state;
+    const show = (n) => (s.step >= n ? 'rv on' : 'rv');
+    const colors = ['#A78BFA', '#FB923C', '#A3E635', '#60A5FA', '#FDE047', '#F472B6'];
+    const confetti = Array.from({ length: 40 }, (_, i) => ({
+      x: ((i * 47 + (s.levelUp ? 13 : 0)) % 380) + 'px',
+      s: (i % 3 === 0 ? 10 : i % 3 === 1 ? 7 : 5) + 'px',
+      c: colors[i % colors.length],
+      d: ((i * 53) % 700) + 'ms'
+    }));
+    const levelSegs = Array.from({ length: 20 }, (_, i) => {
+      if (s.levelUp) return { c: i < s.fill ? '#A3E635' : '#2A2E3D', cls: i === 0 ? 'seg new' : 'seg' };
+      const isNew = i >= 17 && i < s.fill;
+      return { c: i < 17 ? '#7C3AED' : isNew ? '#A3E635' : '#2A2E3D', cls: isNew ? 'seg new' : 'seg' };
+    });
+    const goalSegs = Array.from({ length: 12 }, (_, i) => {
+      const isNew = i >= 8 && i < s.goal;
+      return { c: i < 8 ? '#8B5CF6' : isNew ? '#A3E635' : '#2A2E3D', cls: isNew ? 'seg new' : 'seg' };
+    });
+    const goalMin = 250 + Math.round((s.goal - 8) * 31);
+    return {
+      c: { badge: show(1), r1: show(2), r2: show(3), r3: show(4), level: show(5), streak: show(6), goal: show(7), ach: show(8) },
+      xp: s.xp,
+      xpClass: s.bump ? 'bump' : '',
+      burst: s.burst,
+      confetti,
+      levelSegs,
+      levelUp: s.levelUp,
+      levelCardFlash: s.levelUp ? 'flash' : '',
+      lv: s.levelUp ? '06' : '05',
+      lvBg: s.levelUp ? '#A3E635' : '#A78BFA',
+      lvClass: s.levelUp ? 'lvup' : '',
+      lvText: s.levelUp ? '1524 XP · 24/600 para LV.07' : (1430 + Math.min(s.xp, 70)) + '/1500 XP',
+      lvAria: s.levelUp ? 'Nível 6 alcançado' : 'Nível 5',
+      streak: s.streak === 9 ? '09' : '08',
+      streakClass: s.streak === 9 ? 'flip' : '',
+      streakNote: s.streak === 9 ? '08 → 09 DIAS · RECORDE EM 3' : 'MANTENDO...',
+      goalSegs,
+      goalText: Math.floor(goalMin / 60) + 'h' + String(goalMin % 60).padStart(2, '0'),
+      goalAria: 'Meta semanal de Backend',
+      ctaClass: s.step >= 9 ? 'cta pulse' : 'cta',
+      replay: () => this.play(),
+      toggleSound: () => {
+        try { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        this.setState({ sound: !s.sound }, () => this.beep(880, 0.1));
+      },
+      soundPressed: s.sound ? 'true' : 'false',
+      soundLabel: s.sound ? 'ON' : 'OFF',
+      soundColor: s.sound ? '#A3E635' : '#A1A7B8'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -67,23 +67,51 @@ Inverso: `level = floor((1 + sqrt(1 + xp / 12.5)) / 2)`.
 
 Conquistas são avaliadas ao finalizar cada sessão; as novas aparecem na tela de recompensa.
 
+## Missões do dia (MVP)
+
+Três missões fixas, renovadas à meia-noite no fuso `APP_TZ`. Ao completar, a missão fica **coletável**:
+o XP só entra quando o usuário clica em **COLETAR** (o clique é parte da recompensa).
+
+| Código | Missão | Condição (no dia) | XP |
+|---|---|---|---|
+| `study_30` | Estudar 30 min hoje | soma de `minutes` das sessões do dia ≥ 30 | +25 |
+| `two_summaries` | Escrever 2 resumos | 2 sessões do dia com `summary` não vazio | +15 |
+| `quality_session` | Sessão de qualidade | 1 sessão do dia com ≥ 25 min e nota ≥ 4 | +30 |
+
+- Progresso é **derivado** das sessões do dia (nada é gravado até a coleta).
+- A coleta grava um `QuestClaim` (`day`, `code`, `xp`) com unicidade por dia e código: coletar duas vezes é impossível.
+- Missão completa e não coletada até a meia-noite **expira** (sem XP). Isso cria um motivo leve para abrir o app no mesmo dia.
+- Se uma sessão for excluída depois da coleta, o XP da missão **permanece** (sem punição retroativa).
+- V2: missões variadas por dia (sorteio de um catálogo), com a mesma tabela.
+
 ## Recálculo (Profile é cache)
 
-`recomputeProfile()` reconstrói tudo a partir das sessões, ordenadas por `endedAt`:
-`xp = soma(StudySession.xp)`, streak e `bestStreak` pela sequência de dias com sessões válidas, `lastStudyDay`
+`recomputeProfile()` reconstrói tudo a partir das sessões e das coletas, ordenadas por data:
+`xp = soma(StudySession.xp) + soma(QuestClaim.xp)`, streak e `bestStreak` pela sequência de dias com sessões válidas, `lastStudyDay`
 pelo último dia. É chamado após editar a nota ou excluir/mover sessão e matéria, e disponível como comando de
 manutenção. Conquistas já desbloqueadas **não** são revogadas.
 
 ## Tela de recompensa (UX)
 
-Ordem da animação, tudo em até ~1 s para o primeiro feedback:
-1. Contador de XP subindo (`+92 XP`) com som curto opcional.
-2. Barra de nível enchendo; se subiu de nível, destaque e confete.
-3. Streak (chama) incrementando.
-4. Barra da meta semanal da matéria.
-5. Conquistas novas, uma a uma.
+Sequência validada no protótipo (ver [11-design](11-design.md#sequência-da-recompensa)). Primeiro feedback em < 100 ms,
+sequência completa em ~5,5 s. Tudo dirigido por `reward` da API (`xpBefore`, `xpGained`, `levelBefore`, `level`, ...).
 
-Respeitar `prefers-reduced-motion`: sem confete nem movimentos bruscos, apenas as informações.
+| t (ms) | Evento |
+|---|---|
+| 80 | Selo "SESSÃO SALVA" + confete |
+| 250–1450 | Contador de XP sobe de 0 até `xpGained` (passos de ~3, a cada 32 ms) |
+| 900 / 1100 / 1300 | Linhas do recibo: XP base, bônus, total |
+| 1600 | Card de nível aparece |
+| 1850+ | Blocos novos da barra de nível enchem um a um (230 ms cada, cor de destaque) |
+| ao encher | Se `levelUp`: selo **LEVEL UP!**, barra zera com o progresso no novo nível, novo confete |
+| +700 | Streak gira para o novo valor (se `streakIncreased`) |
+| +600 | Meta semanal da matéria enche os blocos novos |
+| +600 | Conquistas novas deslizam, uma a uma |
+| fim | Botão CONTINUAR pulsa |
+
+- **Som** opcional (desligado por padrão, preferência salva no navegador): bipes curtos com frequência subindo junto do XP, arpejo no level up e na conquista.
+- Respeitar `prefers-reduced-motion`: sem confete, sem sequência; tudo aparece já no estado final.
+- Tocar em qualquer lugar pula para o estado final (quem tem pressa não espera a animação).
 
 ## Guardas contra viés ruim
 

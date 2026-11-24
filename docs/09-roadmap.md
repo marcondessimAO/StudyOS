@@ -9,18 +9,22 @@ Regra: **usar o app no próprio estudo desde o fim do MVP**. Cada fase só come�
 - [ ] Cronômetro (livre e Pomodoro 25/5), persistente no `localStorage`
 - [ ] Finalizar sessão: nota, tipo, resumo
 - [ ] `gamification.ts` com testes: XP, nível, streak, conquistas
-- [ ] Tela de recompensa animada
-- [ ] Dashboard: hoje/semana/mês, heatmap, por matéria
+- [ ] Tela de recompensa animada (sequência e level up, ver [11-design](11-design.md))
+- [ ] Metas semanais por matéria (barra em blocos)
+- [ ] Missões do dia (3 fixas) com coleta de XP
+- [ ] Dashboard: hoje/semana, heatmap clicável, metas, log, conquistas, missões
 - [ ] Histórico com edição e exclusão + recálculo do perfil
+- [ ] `GET /api/health`
 - [ ] Deploy na VPS com backup
 
+Plano detalhado, tarefa por tarefa: [12-plano-de-execucao](12-plano-de-execucao.md).
+
 ## V2 · organização
-- [ ] Metas semanais com barra de progresso
 - [ ] Notas em Markdown ligadas a sessão/tópico, busca full-text
 - [ ] Backlog de tópicos (prioridade, status) e visão "Hoje" com 3 itens
 - [ ] Congelamento de streak (1 por semana)
 - [ ] Exportar dados em JSON
-- [ ] `GET /api/health`
+- [ ] Missões variadas (catálogo sorteado por dia)
 
 ## V3 · retenção e IA
 - [ ] Revisão espaçada (1, 3, 7, 14, 30 dias)

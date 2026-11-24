@@ -1,7 +1,7 @@
 /**
  * Regras de jogo do StudyOS como funções puras. Fonte da verdade: docs/05-gamificacao.md.
  */
-import { appTz, hourInTz, previousDayKey, type DayKey } from "./time";
+import { appTz, dayKey, hourInTz, previousDayKey, type DayKey } from "./time";
 
 // ---------------------------------------------------------------- XP de uma sessão
 
@@ -257,4 +257,43 @@ export function evaluateAchievements(
 ): AchievementCode[] {
   const unlocked = new Set(alreadyUnlocked);
   return ACHIEVEMENTS.filter((a) => !unlocked.has(a.code) && a.unlocked(context, tz)).map((a) => a.code);
+}
+
+// ---------------------------------------------------------------- Recálculo (Profile é cache)
+
+/** O que o recálculo precisa de cada sessão gravada. */
+export interface RecomputeSession {
+  endedAt: Date;
+  minutes: number;
+  /** XP efetivamente concedido (com bônus), como gravado em StudySession.xp. */
+  xp: number;
+}
+
+export interface RecomputeClaim {
+  xp: number;
+}
+
+/** Campos derivados guardados em Profile. */
+export interface ProfileSnapshot extends StreakState {
+  xp: number;
+}
+
+/**
+ * Reconstrói o perfil do zero (ADR-0004): xp = soma das sessões + soma das coletas; streak,
+ * bestStreak e lastStudyDay aplicando nextStreak às sessões em ordem de endedAt.
+ * Não reroda sorteios: usa o XP gravado em cada sessão.
+ */
+export function recomputeProfileFrom(
+  sessions: readonly RecomputeSession[],
+  claims: readonly RecomputeClaim[],
+  tz: string = appTz(),
+): ProfileSnapshot {
+  const ordered = [...sessions].sort((a, b) => a.endedAt.getTime() - b.endedAt.getTime());
+  let streak: StreakState = { lastStudyDay: null, streak: 0, bestStreak: 0 };
+  for (const session of ordered) {
+    streak = nextStreak(streak, dayKey(session.endedAt, tz), session.minutes);
+  }
+  const sessionXpSum = sessions.reduce((sum, s) => sum + s.xp, 0);
+  const claimXpSum = claims.reduce((sum, c) => sum + c.xp, 0);
+  return { xp: sessionXpSum + claimXpSum, ...streak };
 }

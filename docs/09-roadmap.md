@@ -26,7 +26,7 @@ Plano detalhado, tarefa por tarefa: [12-plano-de-execucao](12-plano-de-execucao.
 - [x] T04 · Datas no fuso do app
 - [x] T05 · Gamificação: XP, nível, streak, conquistas
 - [x] T06 · Missões do dia
-- [ ] T07 · Recálculo do perfil
+- [x] T07 · Recálculo do perfil
 - [ ] T08 · Autenticação
 - [ ] T09 · Matérias
 - [ ] T10 · Finalizar sessão

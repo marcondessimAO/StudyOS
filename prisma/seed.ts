@@ -4,6 +4,16 @@
  * Nunca roda com NODE_ENV=production.
  */
 import { PrismaClient } from "@prisma/client";
+import {
+  evaluateAchievements,
+  nextStreak,
+  sessionXp,
+  type AchievementCode,
+  type Rating,
+  type StreakState,
+} from "../src/lib/gamification";
+import { recomputeProfile } from "../src/lib/profile";
+import { addDays, appTz, dayKey, startOfDay } from "../src/lib/time";
 
 if (process.env.NODE_ENV === "production") {
   console.error("seed: recusado com NODE_ENV=production (o seed apaga dados).");
@@ -48,10 +58,10 @@ const SUMMARIES = [
   "",
 ];
 const START_HOURS = [6, 8, 10, 14, 16, 19, 20, 21, 22];
+const RATINGS: readonly Rating[] = [2, 3, 3, 4, 4, 4, 5, 5];
 const DAYS = 70;
-const DAY_MS = 86_400_000;
-// O seed usa o fuso fixo de São Paulo (UTC-3, sem horário de verão desde 2019).
-const TZ_OFFSET_HOURS = 3;
+const HOUR_MS = 3_600_000;
+const MINUTE_MS = 60_000;
 
 /** PRNG determinístico (mulberry32): o seed gera sempre os mesmos dados. */
 function mulberry32(seed: number): () => number {
@@ -68,8 +78,6 @@ const random = mulberry32(20261124);
 const pick = <T>(list: readonly T[]): T => list[Math.floor(random() * list.length)];
 const int = (min: number, max: number): number => min + Math.floor(random() * (max - min + 1));
 
-const MULTIPLIER_TENTHS = [6, 8, 10, 12, 14];
-
 interface SeedSession {
   subjectIndex: number;
   topic: string;
@@ -77,34 +85,32 @@ interface SeedSession {
   startedAt: Date;
   endedAt: Date;
   minutes: number;
-  rating: number;
+  rating: Rating;
   summary: string;
   xp: number;
 }
 
-function buildSessions(now: Date): SeedSession[] {
-  const todaySp = new Date(now.getTime() - TZ_OFFSET_HOURS * 3_600_000);
+/** Sessões em ordem cronológica, com o XP calculado pelas regras oficiais (gamification.ts). */
+function buildSessions(now: Date, tz: string): SeedSession[] {
+  const today = dayKey(now, tz);
   const sessions: SeedSession[] = [];
   for (let back = DAYS - 1; back >= 0; back--) {
-    const day = new Date(
-      Date.UTC(todaySp.getUTCFullYear(), todaySp.getUTCMonth(), todaySp.getUTCDate()) - back * DAY_MS,
-    );
     // Últimos 8 dias sempre com estudo (streak visível); antes disso, ~25% dos dias de folga.
     if (back >= 8 && random() < 0.25) continue;
+    const dayStart = startOfDay(addDays(today, -back), tz).getTime();
     const hours = [...START_HOURS]
       .sort(() => random() - 0.5)
       .slice(0, int(1, 3))
       .sort((a, b) => a - b);
-    let first = true;
+    let isFirstOfDay = true;
     for (const hour of hours) {
       const minutes = int(15, 90);
-      const startedAt = new Date(day.getTime() + (hour + TZ_OFFSET_HOURS) * 3_600_000 + int(0, 50) * 60_000);
-      const endedAt = new Date(startedAt.getTime() + minutes * 60_000);
+      const startedAt = new Date(dayStart + hour * HOUR_MS + int(0, 50) * MINUTE_MS);
+      const endedAt = new Date(startedAt.getTime() + minutes * MINUTE_MS);
       if (endedAt > now) continue;
-      const rating = pick([2, 3, 3, 4, 4, 4, 5, 5]);
+      const rating = pick(RATINGS);
       const subjectIndex = int(0, SUBJECTS.length - 1);
-      // Mesma fórmula de docs/05-gamificacao.md (sem o sorteio do lucky_double).
-      const xp = Math.round((minutes * MULTIPLIER_TENTHS[rating - 1]) / 10) + (first ? 20 : 0);
+      const xp = sessionXp({ minutes, rating, isFirstOfDay, random }).total;
       sessions.push({
         subjectIndex,
         topic: pick(SUBJECTS[subjectIndex].topics),
@@ -116,13 +122,33 @@ function buildSessions(now: Date): SeedSession[] {
         summary: pick(SUMMARIES),
         xp,
       });
-      first = false;
+      isFirstOfDay = false;
     }
   }
   return sessions;
 }
 
+/** Conquistas como se cada sessão tivesse sido finalizada na ordem (unlockedAt = endedAt). */
+function buildAchievements(sessions: readonly SeedSession[], tz: string) {
+  const unlocked: { code: AchievementCode; unlockedAt: Date }[] = [];
+  let streak: StreakState = { lastStudyDay: null, streak: 0, bestStreak: 0 };
+  let totalMinutes = 0;
+  sessions.forEach((session, i) => {
+    totalMinutes += session.minutes;
+    streak = nextStreak(streak, dayKey(session.endedAt, tz), session.minutes);
+    const context = { totalSessions: i + 1, totalMinutes, streak: streak.streak, session };
+    const codes = evaluateAchievements(
+      context,
+      unlocked.map((a) => a.code),
+      tz,
+    );
+    unlocked.push(...codes.map((code) => ({ code, unlockedAt: session.endedAt })));
+  });
+  return unlocked;
+}
+
 async function main(): Promise<void> {
+  const tz = appTz();
   await prisma.$transaction([
     prisma.studySession.deleteMany(),
     prisma.questClaim.deleteMany(),
@@ -140,16 +166,18 @@ async function main(): Promise<void> {
     subjectIds.push(subject.id);
   }
 
-  const sessions = buildSessions(new Date());
+  const sessions = buildSessions(new Date(), tz);
   await prisma.studySession.createMany({
     data: sessions.map(({ subjectIndex, ...rest }) => ({ ...rest, subjectId: subjectIds[subjectIndex] })),
   });
+  const achievements = buildAchievements(sessions, tz);
+  await prisma.achievement.createMany({ data: achievements });
+  const profile = await recomputeProfile(prisma, tz);
 
-  // TODO(T07): trocar pelo recálculo oficial (recomputeProfileFrom) quando ele existir.
-  const xp = sessions.reduce((sum, s) => sum + s.xp, 0);
-  await prisma.profile.create({ data: { id: 1, xp } });
-
-  console.log(`seed: ${SUBJECTS.length} matérias, ${sessions.length} sessões, ${xp} XP.`);
+  console.log(
+    `seed: ${SUBJECTS.length} matérias, ${sessions.length} sessões, ${achievements.length} conquistas, ` +
+      `${profile.xp} XP, streak ${profile.streak} (melhor ${profile.bestStreak}).`,
+  );
 }
 
 main()

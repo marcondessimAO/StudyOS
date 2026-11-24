@@ -13,8 +13,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/lib/**/*.ts"],
-      // db.ts e profile.ts só fazem I/O com o Prisma; a lógica que eles chamam é testada nas funções puras.
-      exclude: ["src/lib/**/*.test.ts", "src/lib/db.ts", "src/lib/profile.ts"],
+      // db.ts só cria o PrismaClient; não há lógica para testar.
+      exclude: ["src/lib/**/*.test.ts", "src/lib/db.ts"],
       reporter: ["text", "html"],
     },
   },

@@ -19,6 +19,31 @@ Regra: **usar o app no próprio estudo desde o fim do MVP**. Cada fase só come�
 
 Plano detalhado, tarefa por tarefa: [12-plano-de-execucao](12-plano-de-execucao.md).
 
+### Progresso do plano de execução
+- [x] T01 · Base do projeto e ferramentas
+- [ ] T02 · Design tokens, fontes e estilos globais
+- [ ] T03 · Banco: schema, migração e seed
+- [ ] T04 · Datas no fuso do app
+- [ ] T05 · Gamificação: XP, nível, streak, conquistas
+- [ ] T06 · Missões do dia
+- [ ] T07 · Recálculo do perfil
+- [ ] T08 · Autenticação
+- [ ] T09 · Matérias
+- [ ] T10 · Finalizar sessão
+- [ ] T11 · Listar, editar e excluir sessões
+- [ ] T12 · Estatísticas do dashboard
+- [ ] T13 · Missões e health
+- [ ] T14 · Kit de componentes
+- [ ] T15 · Login e layout do app
+- [ ] T16 · Matérias (tela)
+- [ ] T17 · Timer
+- [ ] T18 · Fim da sessão
+- [ ] T19 · Recompensa
+- [ ] T20 · Dashboard
+- [ ] T21 · Histórico de sessões
+- [ ] T22 · Deploy na VPS
+- [ ] T23 · Uso real e polimento
+
 ## V2 · organização
 - [ ] Notas em Markdown ligadas a sessão/tópico, busca full-text
 - [ ] Backlog de tópicos (prioridade, status) e visão "Hoje" com 3 itens

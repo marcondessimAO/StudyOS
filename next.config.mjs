@@ -1,3 +1,11 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
 /** @type {import('next').NextConfig} */
-const nextConfig = { reactStrictMode: true };
+const nextConfig = {
+  reactStrictMode: true,
+  // Fixa a raiz do projeto (evita o Next escolher um lockfile de uma pasta acima).
+  outputFileTracingRoot: dirname(fileURLToPath(import.meta.url)),
+};
+
 export default nextConfig;

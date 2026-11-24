@@ -48,6 +48,8 @@ Inverso: `level = floor((1 + sqrt(1 + xp / 12.5)) / 2)`.
 - Qualquer outro caso → `streak = 1`.
 - `bestStreak = max(bestStreak, streak)`.
 - Uma sessão só conta para o streak se tiver **pelo menos 10 minutos líquidos** (evita "streak de 1 minuto"); sessões menores ainda rendem XP.
+- Sessão lançada com dia anterior ao `lastStudyDay` não altera o streak no cálculo incremental; o recálculo
+  (`recomputeProfile`) reordena o histórico e chega ao valor exato.
 - **V2:** 1 "congelamento" por semana para não punir um dia ruim. Exige novos campos em `Profile`.
 
 ## Conquistas (MVP)
@@ -67,6 +69,10 @@ Inverso: `level = floor((1 + sqrt(1 + xp / 12.5)) / 2)`.
 
 Conquistas são avaliadas ao finalizar cada sessão; as novas aparecem na tela de recompensa.
 
+- Horários usam a hora local no fuso `APP_TZ`: `early_bird` = início com hora < 7; `night_owl` = fim entre 23:00 e 23:59
+  (uma sessão que termina depois da meia-noite já é do dia seguinte e não conta).
+- Ícones curtos para a interface (catálogo em `gamification.ts`): `01`, `3D`, `7D`, `30D`, `10H`, `50H`, `100H`, `6AM`, `23H`, `45+`.
+
 ## Missões do dia (MVP)
 
 Três missões fixas, renovadas à meia-noite no fuso `APP_TZ`. Ao completar, a missão fica **coletável**:
@@ -76,9 +82,9 @@ o XP só entra quando o usuário clica em **COLETAR** (o clique é parte da reco
 |---|---|---|---|
 | `study_30` | Estudar 30 min hoje | soma de `minutes` das sessões do dia ≥ 30 | +25 |
 | `two_summaries` | Escrever 2 resumos | 2 sessões do dia com `summary` não vazio | +15 |
-| `quality_session` | Sessão de qualidade | 1 sessão do dia com ≥ 25 min e nota ≥ 4 | +30 |
+| `quality_session` | Sessão de qualidade (25 min, nota 4+) | 1 sessão do dia com ≥ 25 min e nota ≥ 4 | +30 |
 
-- Progresso é **derivado** das sessões do dia (nada é gravado até a coleta).
+- Progresso é **derivado** das sessões do dia (nada é gravado até a coleta). O valor não é limitado à meta (ex.: `study_30` com 95 min mostra 95); resumo só com espaços não conta.
 - A coleta grava um `QuestClaim` (`day`, `code`, `xp`) com unicidade por dia e código: coletar duas vezes é impossível.
 - Missão completa e não coletada até a meia-noite **expira** (sem XP). Isso cria um motivo leve para abrir o app no mesmo dia.
 - Se uma sessão for excluída depois da coleta, o XP da missão **permanece** (sem punição retroativa).

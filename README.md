@@ -50,9 +50,25 @@ git clone <url-do-repo> studyos && cd studyos
 cp .env.example .env
 docker compose -f docker-compose.dev.yml up -d   # sobe só o Postgres
 npm install
-npx prisma migrate dev
+npx prisma migrate dev                            # aplica as migrações
+npm run db:seed                                   # dados de exemplo (só dev; apaga sessões)
 npm run dev                                       # http://localhost:3000
 ```
+
+### Scripts
+
+| Comando | O que faz |
+|---|---|
+| `npm run dev` | Servidor de desenvolvimento |
+| `npm run build` / `npm start` | Build de produção (gera o cliente Prisma) e servidor |
+| `npm run lint` | ESLint (config do Next), sem warnings |
+| `npm run typecheck` | Gera os tipos de rota (`next typegen`) e roda `tsc --noEmit` |
+| `npm run test` / `npm run test:watch` | Testes (Vitest) |
+| `npm run test:coverage` | Testes com cobertura de `src/lib` |
+| `npm run format` / `npm run format:check` | Prettier |
+| `npm run check` | lint + typecheck + testes (obrigatório antes de commit) |
+
+O CI (`.github/workflows/ci.yml`) roda `npm ci`, `npm run check`, `npm run build` e `docker build` (sem push).
 
 ## Deploy (VPS)
 

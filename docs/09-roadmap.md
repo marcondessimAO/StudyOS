@@ -8,7 +8,7 @@ Regra: **usar o app no próprio estudo desde o fim do MVP**. Cada fase só come�
 - [ ] CRUD de matérias
 - [ ] Cronômetro (livre e Pomodoro 25/5), persistente no `localStorage`
 - [ ] Finalizar sessão: nota, tipo, resumo
-- [ ] `gamification.ts` com testes: XP, nível, streak, conquistas
+- [x] `gamification.ts` com testes: XP, nível, streak, conquistas
 - [ ] Tela de recompensa animada (sequência e level up, ver [11-design](11-design.md))
 - [ ] Metas semanais por matéria (barra em blocos)
 - [ ] Missões do dia (3 fixas) com coleta de XP
@@ -18,6 +18,31 @@ Regra: **usar o app no próprio estudo desde o fim do MVP**. Cada fase só come�
 - [ ] Deploy na VPS com backup
 
 Plano detalhado, tarefa por tarefa: [12-plano-de-execucao](12-plano-de-execucao.md).
+
+### Progresso do plano de execução
+- [x] T01 · Base do projeto e ferramentas
+- [x] T02 · Design tokens, fontes e estilos globais
+- [x] T03 · Banco: schema, migração e seed
+- [x] T04 · Datas no fuso do app
+- [x] T05 · Gamificação: XP, nível, streak, conquistas
+- [x] T06 · Missões do dia
+- [x] T07 · Recálculo do perfil
+- [ ] T08 · Autenticação
+- [ ] T09 · Matérias
+- [ ] T10 · Finalizar sessão
+- [ ] T11 · Listar, editar e excluir sessões
+- [ ] T12 · Estatísticas do dashboard
+- [ ] T13 · Missões e health
+- [ ] T14 · Kit de componentes
+- [ ] T15 · Login e layout do app
+- [ ] T16 · Matérias (tela)
+- [ ] T17 · Timer
+- [ ] T18 · Fim da sessão
+- [ ] T19 · Recompensa
+- [ ] T20 · Dashboard
+- [ ] T21 · Histórico de sessões
+- [ ] T22 · Deploy na VPS
+- [ ] T23 · Uso real e polimento
 
 ## V2 · organização
 - [ ] Notas em Markdown ligadas a sessão/tópico, busca full-text

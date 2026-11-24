@@ -1,0 +1,507 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de docs/11-design.md. A paleta e as sombras padrão do Tailwind são removidas
+ * para que só os tokens do StudyOS existam. Raio 0 em tudo.
+ */
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+
+  --color-ink: #0e0f14;
+  --color-ink-deep: #0b0c10;
+  --color-surface: #171922;
+  --color-surface-2: #1f2230;
+  --color-line: #2a2e3d;
+  --color-line-strong: #3a3f52;
+  --color-dot: #23263a;
+  --color-text: #f3f4f8;
+  --color-muted: #a1a7b8;
+  --color-faint: #7d8396;
+
+  --color-violet-600: #7c3aed;
+  --color-violet-500: #8b5cf6;
+  --color-violet-400: #a78bfa;
+  --color-violet-300: #c4b5fd;
+  --color-violet-deep-1: #1b1830;
+  --color-violet-deep-2: #2b2150;
+  --color-violet-deep-3: #4c3a8f;
+
+  --color-lime: #a3e635;
+  --color-lime-deep: #4d7c0f;
+  --color-orange: #fb923c;
+  --color-orange-ink: #1a0e05;
+  --color-orange-deep: #4a2e1c;
+  --color-yellow: #fde047;
+
+  --color-heat-0: #222533;
+  --color-heat-1: #3b2a6b;
+  --color-heat-2: #5b3bb0;
+  --color-heat-3: #7c3aed;
+  --color-heat-4: #a78bfa;
+
+  /* Cores sugeridas para matérias (fundo) e a versão clara para texto. */
+  --color-subject-violet: #8b5cf6;
+  --color-subject-green: #22c55e;
+  --color-subject-blue: #3b82f6;
+  --color-subject-orange: #f97316;
+  --color-subject-violet-text: #c4b5fd;
+  --color-subject-green-text: #86efac;
+  --color-subject-blue-text: #93c5fd;
+  --color-subject-orange-text: #fdba74;
+
+  --radius-*: initial;
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-4xl: 0;
+
+  /* Sombras duras (sem blur), deslocadas para baixo e à direita. */
+  --shadow-*: initial;
+  --shadow-primary: 4px 4px 0 #a3e635;
+  --shadow-claim: 3px 3px 0 #4d7c0f;
+  --shadow-streak: 6px 6px 0 #4a2e1c;
+  --shadow-badge: 4px 4px 0 #4c3a8f;
+  --shadow-toast: 6px 6px 0 #7c3aed;
+  --shadow-overlay: 5px 5px 0 #7c3aed;
+  --shadow-none: none;
+
+  --animate-segpop: segpop 0.5s cubic-bezier(0.2, 1.8, 0.4, 1);
+  --animate-float: float 1.1s ease-out forwards;
+  --animate-fall: fall 2.4s cubic-bezier(0.25, 0.6, 0.5, 1) forwards;
+  --animate-flip: flip 0.55s ease;
+  --animate-lvup: lvup 0.9s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+  --animate-bump: bump 0.25s ease;
+  --animate-pulse: pulse 1.2s ease-in-out infinite;
+  --animate-claim: claim 1s ease-in-out infinite;
+  --animate-blink: blink 1s steps(2, start) infinite;
+  --animate-flame: flame 1.4s ease-in-out infinite;
+  --animate-toast: toast 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+/* Fontes carregadas com next/font em src/app/fonts.ts (variáveis CSS no <html>). */
+@theme inline {
+  --font-display: var(--font-unbounded), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+/* ---------- Keyframes (copiados dos <helmet><style> do protótipo) ---------- */
+@keyframes segpop {
+  0% {
+    transform: scaleY(0.1);
+    filter: brightness(2.2);
+  }
+  60% {
+    transform: scaleY(1.6);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+@keyframes float {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-44px);
+  }
+}
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  100% {
+    transform: translateY(900px) rotate(720deg);
+  }
+}
+@keyframes flip {
+  0% {
+    transform: rotateX(0);
+  }
+  50% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0);
+  }
+}
+@keyframes lvup {
+  0% {
+    transform: scale(0.2) rotate(-8deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes bump {
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes pulse {
+  50% {
+    transform: scale(1.03);
+  }
+}
+@keyframes claim {
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(163, 230, 53, 0.35),
+      3px 3px 0 #4d7c0f;
+  }
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@keyframes flame {
+  0%,
+  100% {
+    transform: scale(1) rotate(0);
+  }
+  30% {
+    transform: scale(1.08, 0.94) rotate(-3deg);
+  }
+  60% {
+    transform: scale(0.95, 1.07) rotate(3deg);
+  }
+}
+@keyframes toast {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes flash {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(163, 230, 53, 0);
+  }
+  40% {
+    box-shadow: 0 0 0 6px rgba(163, 230, 53, 0.9);
+  }
+}
+@keyframes shine {
+  50% {
+    filter: brightness(1.35);
+  }
+}
+@keyframes glow {
+  50% {
+    filter: brightness(1.25);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.3);
+    filter: brightness(2.2);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes tick {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes done {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+/* popA/popB e txA/txB são pares idênticos: alternar o nome reinicia a animação (Avaliar). */
+@keyframes popA {
+  0% {
+    transform: scaleY(0.6);
+  }
+  60% {
+    transform: scaleY(1.18);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+@keyframes popB {
+  0% {
+    transform: scaleY(0.6);
+  }
+  60% {
+    transform: scaleY(1.18);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+@keyframes txA {
+  0% {
+    transform: translateY(10px) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes txB {
+  0% {
+    transform: translateY(10px) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-ink);
+    background-image: radial-gradient(var(--color-dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+  a {
+    color: var(--color-violet-300);
+  }
+  a:hover {
+    color: #ddd6fe;
+  }
+  textarea::placeholder,
+  input::placeholder {
+    color: var(--color-faint);
+  }
+}
+
+/* ---------- Classes equivalentes às do protótipo ---------- */
+@layer components {
+  .label-section {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .lift {
+    transition:
+      transform 0.15s,
+      box-shadow 0.15s;
+  }
+  .lift:hover {
+    transform: translate(-3px, -3px);
+  }
+  .press,
+  .btn {
+    transition:
+      transform 0.1s,
+      box-shadow 0.1s,
+      background 0.15s,
+      color 0.15s;
+  }
+  .press:hover,
+  .btn:hover {
+    transform: translate(-2px, -2px);
+  }
+  .press:active,
+  .btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 transparent !important;
+  }
+  .cta {
+    transition:
+      transform 0.12s,
+      box-shadow 0.12s;
+  }
+  .cta:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--color-lime) !important;
+  }
+  .cta:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--color-lime) !important;
+  }
+  .ghost {
+    transition:
+      background 0.15s,
+      color 0.15s;
+  }
+  .ghost:hover {
+    background: var(--color-text) !important;
+    color: var(--color-ink) !important;
+  }
+  .chip {
+    transition:
+      transform 0.1s,
+      background 0.15s,
+      color 0.15s;
+  }
+  .chip:hover {
+    transform: translateY(-2px);
+  }
+  .chip:active {
+    transform: scale(0.95);
+  }
+  .cell {
+    transition: transform 0.12s;
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+  }
+  .cell:hover {
+    transform: scale(1.35);
+    position: relative;
+    z-index: 2;
+  }
+  .bar {
+    transform-origin: bottom;
+    transition:
+      transform 0.12s,
+      background 0.15s,
+      border-color 0.15s;
+  }
+  .bar:hover {
+    transform: scaleY(1.06);
+  }
+  .seg {
+    display: block;
+    transform-origin: bottom;
+  }
+  .seg.new {
+    animation: var(--animate-segpop);
+  }
+  .blk {
+    display: block;
+    transition: background 0.2s;
+  }
+  .blk.pop {
+    animation: pop 0.5s cubic-bezier(0.2, 1.8, 0.4, 1);
+  }
+  .flame {
+    animation: var(--animate-flame);
+    transform-origin: bottom center;
+  }
+  .float {
+    position: absolute;
+    right: 16px;
+    top: -14px;
+    animation: var(--animate-float);
+    pointer-events: none;
+  }
+  .claim {
+    animation: var(--animate-claim);
+  }
+  .toast {
+    animation: var(--animate-toast);
+  }
+  .cursor,
+  .blink {
+    animation: var(--animate-blink);
+  }
+  .rv {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+    transition:
+      opacity 0.3s ease,
+      transform 0.5s cubic-bezier(0.2, 1.5, 0.4, 1);
+  }
+  .rv.on {
+    opacity: 1;
+    transform: none;
+  }
+  .fall {
+    position: absolute;
+    top: -20px;
+    animation: var(--animate-fall);
+  }
+  .flip {
+    animation: var(--animate-flip);
+  }
+  .bump {
+    animation: var(--animate-bump);
+  }
+  .lvup {
+    animation: var(--animate-lvup);
+  }
+  .flash {
+    animation: flash 0.6s ease;
+  }
+  .shine {
+    animation: shine 1.6s ease-in-out infinite;
+  }
+  .glow {
+    animation: glow 1.6s ease-in-out infinite;
+  }
+  .pulse {
+    animation: var(--animate-pulse);
+  }
+  .tick {
+    animation: tick 0.25s ease;
+  }
+  .done {
+    animation: done 0.8s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+  }
+  .popA {
+    animation: popA 0.45s cubic-bezier(0.2, 1.8, 0.4, 1);
+  }
+  .popB {
+    animation: popB 0.45s cubic-bezier(0.2, 1.8, 0.4, 1);
+  }
+  .txA {
+    display: inline-block;
+    animation: txA 0.4s cubic-bezier(0.2, 1.6, 0.4, 1);
+  }
+  .txB {
+    display: inline-block;
+    animation: txB 0.4s cubic-bezier(0.2, 1.6, 0.4, 1);
+  }
+}
+
+/* Movimento é opcional: com reduced motion tudo aparece no estado final. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .rv {
+    opacity: 1;
+    transform: none;
+  }
+}

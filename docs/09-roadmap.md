@@ -8,7 +8,7 @@ Regra: **usar o app no próprio estudo desde o fim do MVP**. Cada fase só come�
 - [ ] CRUD de matérias
 - [ ] Cronômetro (livre e Pomodoro 25/5), persistente no `localStorage`
 - [ ] Finalizar sessão: nota, tipo, resumo
-- [ ] `gamification.ts` com testes: XP, nível, streak, conquistas
+- [x] `gamification.ts` com testes: XP, nível, streak, conquistas
 - [ ] Tela de recompensa animada (sequência e level up, ver [11-design](11-design.md))
 - [ ] Metas semanais por matéria (barra em blocos)
 - [ ] Missões do dia (3 fixas) com coleta de XP
@@ -24,7 +24,7 @@ Plano detalhado, tarefa por tarefa: [12-plano-de-execucao](12-plano-de-execucao.
 - [x] T02 · Design tokens, fontes e estilos globais
 - [x] T03 · Banco: schema, migração e seed
 - [x] T04 · Datas no fuso do app
-- [ ] T05 · Gamificação: XP, nível, streak, conquistas
+- [x] T05 · Gamificação: XP, nível, streak, conquistas
 - [ ] T06 · Missões do dia
 - [ ] T07 · Recálculo do perfil
 - [ ] T08 · Autenticação

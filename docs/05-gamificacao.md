@@ -48,6 +48,8 @@ Inverso: `level = floor((1 + sqrt(1 + xp / 12.5)) / 2)`.
 - Qualquer outro caso → `streak = 1`.
 - `bestStreak = max(bestStreak, streak)`.
 - Uma sessão só conta para o streak se tiver **pelo menos 10 minutos líquidos** (evita "streak de 1 minuto"); sessões menores ainda rendem XP.
+- Sessão lançada com dia anterior ao `lastStudyDay` não altera o streak no cálculo incremental; o recálculo
+  (`recomputeProfile`) reordena o histórico e chega ao valor exato.
 - **V2:** 1 "congelamento" por semana para não punir um dia ruim. Exige novos campos em `Profile`.
 
 ## Conquistas (MVP)
@@ -66,6 +68,10 @@ Inverso: `level = floor((1 + sqrt(1 + xp / 12.5)) / 2)`.
 | `perfect_focus` | Foco total | Sessão de 45 min ou mais com nota 5 |
 
 Conquistas são avaliadas ao finalizar cada sessão; as novas aparecem na tela de recompensa.
+
+- Horários usam a hora local no fuso `APP_TZ`: `early_bird` = início com hora < 7; `night_owl` = fim entre 23:00 e 23:59
+  (uma sessão que termina depois da meia-noite já é do dia seguinte e não conta).
+- Ícones curtos para a interface (catálogo em `gamification.ts`): `01`, `3D`, `7D`, `30D`, `10H`, `50H`, `100H`, `6AM`, `23H`, `45+`.
 
 ## Missões do dia (MVP)
 
